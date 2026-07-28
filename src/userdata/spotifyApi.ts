@@ -1,0 +1,27 @@
+// This file fetches the user's info like playlists
+import { getRefreshToken  } from "../auth/spotifyAuth";
+
+// Every spotify endpoint needs tthe same three things so this wrapper
+// makes the calls easier by coding them in
+async function spotifyFetch(path: string, init: RequestInit = {}) {
+    const call = () => fetch(`https://api.spotify.com/v1${path}`, {
+        ...init,
+        headers: {
+            ...init.headers,
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`
+        }
+    });
+
+    let res = await call();
+    // 401 means there is no access token, so attempt a refresh
+    if (res.status === 401) {
+        await getRefreshToken();
+        res = await call();
+    } if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    return res;
+}
+
+export async function getUserPlaylists() {
+    const res = await spotifyFetch("/me/playlists?limit=50");
+    return (await res.json()).items;
+}
