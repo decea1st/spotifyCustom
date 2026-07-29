@@ -52,7 +52,7 @@ function App() {
               ))}
             </div>
           )}
-          <Controls paused={state?.paused ?? true} disabled={!deviceId} onTogglePlay={togglePlay} onPrev={prev} onNext={next}/>
+          <Controls image={state?.track_window.current_track.album.images[0].url} name={state?.track_window.current_track.name} artists={state?.track_window.current_track.artists} paused={state?.paused ?? true} disabled={!deviceId} onTogglePlay={togglePlay} onPrev={prev} onNext={next}/>
         </>
       ) : (
         <button onClick={() => redirectToSpotifyLogin()} className={clsx("cursor-pointer text-[24px] bg-green-400 rounded-xl px-5 py-2 mt-12", "hover:bg-green-500", "active:bg-green-700")}>
