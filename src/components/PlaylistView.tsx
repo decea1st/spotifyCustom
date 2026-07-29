@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPlaylistItems } from "../userdata/spotifyApi";
+import { getPlaylistItems, playPlaylistTrack } from "../userdata/spotifyApi";
 
 const formatDuration = (ms: number) => {
   const totalSeconds = Math.floor(ms / 1000);
@@ -9,10 +9,11 @@ const formatDuration = (ms: number) => {
 
 type Props = {
   playlist: any;
+  deviceId: string | null;
   onBack: () => void;
 };
 
-export default function PlaylistView({ playlist, onBack }: Props) {
+export default function PlaylistView({ playlist, deviceId, onBack }: Props) {
   const [tracks, setTracks] = useState<any[]>([]);
 
   // Refetch whenever a different playlist is opened
@@ -20,6 +21,11 @@ export default function PlaylistView({ playlist, onBack }: Props) {
     setTracks([]);
     getPlaylistItems(playlist.id).then(setTracks).catch(console.error);
   }, [playlist.id]);
+
+  const play = (trackUri: string) => {
+    if (!deviceId) return;
+    playPlaylistTrack(deviceId, playlist.uri, trackUri).catch(console.error);
+  };
 
   return (
     <div className="w-full p-6">
@@ -46,27 +52,30 @@ export default function PlaylistView({ playlist, onBack }: Props) {
 
       <ol className="flex flex-col">
         {tracks.map((row, i) => (
-          <li
-            key={`${row.item?.id}-${i}`}
-            className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-zinc-700"
-          >
-            <span className="text-zinc-500 text-sm w-6 text-right">{i + 1}</span>
-            <img
-              src={row.item?.album?.images?.[0]?.url}
-              alt=""
-              className="w-10 h-10 rounded bg-zinc-700"
-            />
-            <div className="min-w-0 flex-1">
-              <p className="text-white text-sm truncate">
-                {row.item?.name ?? "Unavailable"}
-              </p>
-              <p className="text-zinc-400 text-xs truncate">
-                {row.item?.artists?.map((a: any) => a.name).join(", ")}
-              </p>
-            </div>
-            <span className="text-zinc-500 text-xs">
-              {row.item?.duration_ms ? formatDuration(row.item.duration_ms) : ""}
-            </span>
+          <li key={`${row.item?.id}-${i}`}>
+            <button
+              onClick={() => play(row.item.uri)}
+              disabled={!deviceId || !row.item}
+              className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-left cursor-pointer hover:bg-zinc-700 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent"
+            >
+              <span className="text-zinc-500 text-sm w-6 text-right">{i + 1}</span>
+              <img
+                src={row.item?.album?.images?.[0]?.url}
+                alt=""
+                className="w-10 h-10 rounded bg-zinc-700"
+              />
+              <div className="min-w-0 flex-1">
+                <p className="text-white text-sm truncate">
+                  {row.item?.name ?? "Unavailable"}
+                </p>
+                <p className="text-zinc-400 text-xs truncate">
+                  {row.item?.artists?.map((a: any) => a.name).join(", ")}
+                </p>
+              </div>
+              <span className="text-zinc-500 text-xs">
+                {row.item?.duration_ms ? formatDuration(row.item.duration_ms) : ""}
+              </span>
+            </button>
           </li>
         ))}
       </ol>

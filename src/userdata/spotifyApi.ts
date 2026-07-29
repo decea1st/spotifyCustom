@@ -1,5 +1,5 @@
 // This file fetches the user's info like playlists
-import { getRefreshToken  } from "../auth/spotifyAuth";
+import { refreshAccessToken  } from "../auth/spotifyAuth";
 
 // Every spotify endpoint needs tthe same three things so this wrapper
 // makes the calls easier by coding them in
@@ -15,7 +15,7 @@ async function spotifyFetch(path: string, init: RequestInit = {}) {
     let res = await call();
     // 401 means there is no access token, so attempt a refresh
     if (res.status === 401) {
-        await getRefreshToken();
+        await refreshAccessToken();
         res = await call();
     } if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     return res;
@@ -37,7 +37,7 @@ export async function playPlaylistTrack(deviceId: string, contextUri: string, tr
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            contextUri: contextUri,
+            context_uri: contextUri,
             offset: {"uri": trackUri},
         })
     })

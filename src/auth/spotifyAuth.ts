@@ -98,9 +98,10 @@ export async function handleSpotifyCallback() {
    sessionStorage.removeItem("spotify_code_verifier");
    localStorage.setItem('access_token', body.access_token);
    localStorage.setItem('refresh_token', body.refresh_token);
+   localStorage.setItem('expires_at', String(Date.now() + body.expires_in * 1000));
 }
 // Access tokens expire every hour and refreshTokens request for a new one
-export async function getRefreshToken() {
+export async function refreshAccessToken() {
    const refreshToken = localStorage.getItem('refresh_token');
    
    if (!refreshToken) return null;
@@ -121,16 +122,24 @@ export async function getRefreshToken() {
    const response = await fetch(url, options);
    const body = await response.json();
 
-   if (!response.ok) throw new Error(`Token refresh failed: ${body.error}`);
-
    if (body.error === 'invalid_grant') {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
-      window.location.href = '/login';
+      localStorage.removeItem('expires_at');
+      window.location.href = '/';
       return;
    }
 
+   if (!response.ok) throw new Error(`Token refresh failed: ${body.error}`);
+
    localStorage.setItem('access_token', body.access_token);
+   localStorage.setItem('expires_at', String(Date.now() + body.expires_in * 1000));
 
    if (body.refresh_token) localStorage.setItem('refresh_token', body.refresh_token);
+}
+
+export async function checkStaleToken() {
+   const expiresAt = Number(localStorage.getItem('expires_at'));
+   if (Date.now() > expiresAt - 60_000) await refreshAccessToken();
+   return localStorage.getItem('access_token');
 }
