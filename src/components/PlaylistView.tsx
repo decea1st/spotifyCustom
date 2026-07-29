@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getPlaylistItems, playPlaylistTrack } from "../userdata/spotifyApi";
+import { usePlayerContext } from "../player/PlayerContext";
 
 const formatDuration = (ms: number) => {
   const totalSeconds = Math.floor(ms / 1000);
@@ -9,11 +10,11 @@ const formatDuration = (ms: number) => {
 
 type Props = {
   playlist: any;
-  deviceId: string | null;
   onBack: () => void;
 };
 
-export default function PlaylistView({ playlist, deviceId, onBack }: Props) {
+export default function PlaylistView({ playlist, onBack }: Props) {
+  const { deviceId } = usePlayerContext();
   const [tracks, setTracks] = useState<any[]>([]);
 
   // Refetch whenever a different playlist is opened

@@ -2,10 +2,8 @@ import "./App.css";
 import clsx from "clsx";
 import { handleSpotifyCallback, redirectToSpotifyLogin } from "./auth/spotifyAuth";
 import { useEffect, useRef, useState } from "react";
-import Header from "./components/Header";
 import PlaylistView from "./components/PlaylistView";
 import { getUserPlaylists } from "./userdata/spotifyApi";
-import { usePlayer } from "./player/usePlayer";
 import Controls from "./components/Controls";
 
 function App() {
@@ -13,7 +11,6 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(() => !!localStorage.getItem('access_token'))
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null); // which playlist is selected. Null to view grid
-  const { deviceId, state, togglePlay, seek, next, prev, setVolume } = usePlayer();
   // After login, client is redirected back to app with a code in the URL
   // This block runs on mount every time to check if a code is present in the URL
   useEffect(() => {
@@ -40,7 +37,7 @@ function App() {
       {loggedIn ? (
         <>
           {selected ? (
-            <PlaylistView playlist={selected} deviceId={deviceId} onBack={() => setSelected(null)} />
+            <PlaylistView playlist={selected} onBack={() => setSelected(null)} />
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-6 w-full">
               {playlists.map((p) => (
@@ -52,7 +49,7 @@ function App() {
               ))}
             </div>
           )}
-          <Controls image={state?.track_window.current_track.album.images[0].url} name={state?.track_window.current_track.name} artists={state?.track_window.current_track.artists} paused={state?.paused ?? true} disabled={!deviceId} onTogglePlay={togglePlay} onPrev={prev} onNext={next}/>
+          <Controls />
         </>
       ) : (
         <button onClick={() => redirectToSpotifyLogin()} className={clsx("cursor-pointer text-[24px] bg-green-400 rounded-xl px-5 py-2 mt-12", "hover:bg-green-500", "active:bg-green-700")}>

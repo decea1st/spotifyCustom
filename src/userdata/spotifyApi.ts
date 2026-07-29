@@ -42,3 +42,11 @@ export async function playPlaylistTrack(deviceId: string, contextUri: string, tr
         })
     })
 }
+
+export async function getActiveDevice() {
+    const res = await spotifyFetch(`/me/player`)
+    if (res.status == 204) return null;
+    const resText = await res.json();
+    console.log(resText)
+    return resText;
+}

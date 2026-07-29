@@ -8,9 +8,11 @@ import { checkStaleToken } from "../auth/spotifyAuth";
 // Spotify has a script that looks for a specificly named function in the global and calls it
 // "window.onSpotifyWebPlaybackSDKReady()" makes the function global. That's what "window" does.  
 export function usePlayer() {
+    //useRef so other files can control it (play, pause, etc)
+    const player = useRef<Spotify.Player | null>(null);
     const [deviceId, setDeviceId] = useState<string | null>(null);
     const [state, setState] = useState<Spotify.PlaybackState | null>(null);
-    const player = useRef<Spotify.Player | null>(null);
+    // control functions
     const togglePlay = () => player.current?.togglePlay();
     const seek = (time: number) => player.current?.seek(time);
     const next = () => player.current?.nextTrack();
@@ -18,8 +20,6 @@ export function usePlayer() {
     const setVolume = (volume: number) => player.current?.setVolume(volume);
 
     useEffect(() => {
-        //useRef so other files can control it (play, pause, etc)
-
         // define the global first
         window.onSpotifyWebPlaybackSDKReady = () => {
             // Instance of the Player class

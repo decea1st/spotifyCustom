@@ -1,15 +1,42 @@
-type Props = {
-    image?: string | null;
-    name?: string | null;
-    artists?: Spotify.Entity[] | null;
-    paused: boolean;
-    disabled: boolean;
-    onTogglePlay: () => void;
-    onPrev: () => void;
-    onNext: () => void;
-};
+import { useEffect, useState } from "react";
+import { getActiveDevice } from "../userdata/spotifyApi";
+import { usePlayerContext } from "../player/PlayerContext";
+import type { RemotePlayback } from "../types";
 
-export default function Controls({ image, name, artists, paused, disabled, onTogglePlay, onNext, onPrev }: Props) {
+export default function Controls() {
+    const { state, deviceId, togglePlay, prev, next } = usePlayerContext();
+    const disabled = !deviceId
+    const [trackPosition, setTrackPosition] = useState(0);
+    const [remote, setRemote] = useState<RemotePlayback | null>(null);
+    const local = !!state; // is music playing here or remote device?
+
+    const track = local ? state.track_window.current_track : remote?.item;
+    const image = track?.album?.images?.[0]?.url;
+    const name = track?.name;
+    const artists = track?.artists;
+    const paused = local ? state?.paused : !remote?.is_playing;
+    const deviceName = local ? "YouSpot" : remote?.device?.name;
+
+    // get other active device info
+    useEffect(() => {
+        if (state) return; // playback happening here, return
+        const check = () => getActiveDevice().then(setRemote).catch(console.error);
+        check();
+        const id = setInterval(check, 8000);
+        return () => clearInterval(id);
+    }, [state])
+
+    useEffect(() => {
+        if (!state) return;
+        setTrackPosition(state.position);
+        if (state.paused) return;
+
+        const id = setInterval(() => {
+            setTrackPosition(state.position + (Date.now() - state.timestamp));
+        }, 1000);
+        return () => clearInterval(id);
+    }, [state]);
+    
     return (
         <div className="fixed bottom-0 left-0 w-full h-[70px] bg-zinc-900 border-t border-zinc-700 flex items-center justify-center gap-6">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
@@ -31,7 +58,7 @@ export default function Controls({ image, name, artists, paused, disabled, onTog
             </div>
 
             <button
-                onClick={onPrev}
+                onClick={prev}
                 disabled={disabled}
                 className="cursor-pointer text-white disabled:cursor-default disabled:opacity-40"
             >
@@ -41,7 +68,7 @@ export default function Controls({ image, name, artists, paused, disabled, onTog
             </button>
 
             <button
-                onClick={onTogglePlay}
+                onClick={togglePlay}
                 disabled={disabled}
                 className="cursor-pointer w-12 h-12 rounded-full bg-zinc-700 text-white flex items-center justify-center hover:bg-zinc-600 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-zinc-700"
             >
@@ -57,7 +84,7 @@ export default function Controls({ image, name, artists, paused, disabled, onTog
             </button>
 
             <button
-                onClick={onNext}
+                onClick={next}
                 disabled={disabled}
                 className="cursor-pointer text-white disabled:cursor-default disabled:opacity-40"
             >
