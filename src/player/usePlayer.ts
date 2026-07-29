@@ -17,7 +17,7 @@ export function usePlayer() {
     const seek = (time: number) => player.current?.seek(time);
     const next = () => player.current?.nextTrack();
     const prev = () => player.current?.previousTrack();
-    const setVolume = (volume: number) => player.current?.setVolume(volume);
+    const setVolume = (v: number) => player.current?.setVolume(v ** 3.32);
 
     useEffect(() => {
         // define the global first
@@ -25,6 +25,7 @@ export function usePlayer() {
             // Instance of the Player class
             player.current = new Spotify.Player({
                 name: "YouSpot",
+                volume: 0.5,
                 // Their cb function receives the token and registers this app as a device in their servers
                 getOAuthToken: async (cb) => {
                     await checkStaleToken();
@@ -35,7 +36,7 @@ export function usePlayer() {
                     } cb(token)
                 },
             });
-            (window as any).p = player.current;
+            
             // After token is supplied and it's valid, the class internally updates an object to write the device_id
             player.current.addListener('ready', ({ device_id }) => {
                 setDeviceId(device_id);
