@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import PlaylistView from "./components/PlaylistView";
 import { getUserPlaylists } from "./userdata/spotifyApi";
 import Controls from "./components/Controls";
+import SearchBar from "./components/SearchBar";
 
 function App() {
   const ranOnce = useRef(false);
@@ -40,15 +41,18 @@ function App() {
             {selected ? (
               <PlaylistView playlist={selected} onBack={() => setSelected(null)} />
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 p-6 w-full">
-                {playlists.map((p) => (
-                  <button key={p.id} className="cursor-pointer text-left bg-zinc-900 rounded-lg p-3 hover:bg-zinc-700" onClick={() => setSelected(p)}>
-                    <img src={p.images?.[0]?.url} alt="" className="w-full aspect-square object-cover rounded-md mb-2 bg-zinc-700" />
-                    <p className="text-white text-sm font-medium truncate">{p.name}</p>
-                    <p className="text-zinc-400 text-xs">{p.items?.total ?? 0} tracks</p>
-                  </button>
-                ))}
-              </div>
+              <>
+                <SearchBar className="w-full max-w-[700px] p-3 px-6" />
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-6 pb-6 w-full">
+                  {playlists.map((p) => (
+                    <button key={p.id} className="cursor-pointer text-left bg-zinc-900 rounded-lg p-3 hover:bg-zinc-700" onClick={() => setSelected(p)}>
+                      <img src={p.images?.[0]?.url} alt="" className="w-full aspect-square object-cover rounded-md mb-2 bg-zinc-700" />
+                      <p className="text-white text-sm font-medium truncate">{p.name}</p>
+                      <p className="text-zinc-400 text-xs">{p.items?.total ?? 0} tracks</p>
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
           </div>
           <Controls />

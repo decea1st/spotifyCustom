@@ -31,7 +31,19 @@ export async function getPlaylistItems(id: string) {
     const res = await spotifyFetch(`/playlists/${id}/items?limit=100`);
     return (await res.json()).items;
 }
-// ContextUri = Playlist Uri, 
+export async function searchTracks(q: string) {
+    const res = await spotifyFetch(`/search?q=${encodeURIComponent(q)}&type=track&limit=10`);
+    return (await res.json()).tracks.items;
+}
+// Search results have no playlist to play within, so they go as a bare list of uris
+export async function playTracks(deviceId: string, uris: string[]) {
+    await spotifyFetch(`/me/player/play?device_id=${deviceId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uris })
+    })
+}
+// ContextUri = Playlist Uri,
 export async function playPlaylistTrack(deviceId: string, contextUri: string, trackUri: string) {
     await spotifyFetch(`/me/player/play?device_id=${deviceId}`, {
         method: "PUT",
