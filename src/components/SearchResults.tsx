@@ -26,7 +26,7 @@ export default function SearchResults({ query }: { query: string }) {
     if (tracks.length === 0) return null;
 
     return (
-        <ol className="absolute left-0 right-0 top-full mt-2 z-10 flex flex-col p-2 max-h-[60vh] overflow-y-auto rounded-xl bg-zinc-900 shadow-xl shadow-black/50">
+        <ol className="absolute left-0 right-0 top-full mt-2 z-10 flex flex-col p-2 max-h-[60vh] overflow-y-auto rounded-xl bg-[#983d3d] shadow-xl shadow-black/50">
             {tracks.map((t) => (
                 <li key={t.id}>
                     <button

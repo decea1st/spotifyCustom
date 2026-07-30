@@ -1,4 +1,30 @@
 @import "tailwindcss";
+
+/* the window is transparent, so no layer above the frame art may paint a background */
+html,
+body,
+#root {
+  background: transparent;
+}
+/* transparent track so only the thumb shows; translucent so it tints the theme's background */
+::-webkit-scrollbar {
+  width: 8px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb, rgb(0 0 0 / 0.25));
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover, rgb(0 0 0 / 0.4));
+}
+
 .logo {
   height: 18em;
   padding: 1.5em;
