@@ -14,8 +14,9 @@
       {
         "title": "YouSpot",
         "width": 500,
-        "height": 828,
+        "height": 842,
         "decorations": false,
+        "maximizable": false,
         "transparent": true,
         "shadow": false
       }

@@ -1,5 +1,67 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Drawing Doodle";
+  src: url("./assets/fonts/DrawingDoodle-Regular.otf") format("opentype");
+  font-weight: 200;
+  font-display: block;
+}
+
+@theme {
+  --font-sans: "Drawing Doodle", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ---------------------------------------------------------------------------
+   Theme palette. Every color in the UI resolves to one of these, so a theme is
+   a list of overrides on :root rather than an edit through the JSX.
+
+   Anything that sits ON a red surface is defined as an alpha overlay instead of
+   a hex, so it composites against whatever red a theme picks and can't clash.
+
+   Alternate slider palettes to try:
+     "cream"  (quieter, matches the panel):  fill #e8dbdb  thumb #f7efef
+     "frame"  (frame outline pink, louder):  fill #f2b7bd  thumb #ffffff
+   --------------------------------------------------------------------------- */
+:root {
+  /* surfaces */
+  --panel: #e8dbdb;         /* content area behind everything */
+  --bar: #c53939;           /* control bar */
+  --card: #b73737;          /* playlist cards, search field, results dropdown,
+                               and a hovered track row — same "clickable item" */
+  --card-accent: #ba4341;   /* search field while focused */
+  --divider: rgb(0 0 0 / 0.15);
+
+  /* text on the panel */
+  --text: #000000;
+  --text-muted: #4a3a3a;    /* artist names, track counts */
+  --text-faint: #7f6666;    /* list numbers, durations */
+
+  /* text on red surfaces */
+  --text-on-card: #ffffff;
+  --text-on-card-muted: rgb(255 255 255 / 0.7);
+
+  /* hover lift for rows already sitting on a red surface (search results) */
+  --overlay-hover: rgb(255 255 255 / 0.12);
+
+  /* album art placeholders, before the image loads */
+  --art-on-panel: #d3c2c2;
+  --art-on-card: rgb(0 0 0 / 0.1);
+
+  /* primary action */
+  --play-bg: #fdf3f4;
+  --play-bg-hover: #ffffff;
+  --play-icon: #c53939;
+
+  /* sliders */
+  --slider-fill: #f6c1c9;
+  --slider-thumb: #fffafa;
+  --slider-track: rgb(0 0 0 / 0.22);
+
+  /* scrollbar */
+  --scrollbar-thumb: rgb(0 0 0 / 0.25);
+  --scrollbar-thumb-hover: rgb(0 0 0 / 0.4);
+}
+
 /* the window is transparent, so no layer above the frame art may paint a background */
 html,
 body,
@@ -17,12 +79,58 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb, rgb(0 0 0 / 0.25));
+  background: var(--scrollbar-thumb);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover, rgb(0 0 0 / 0.4));
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Range sliders. The native widget paints over anything set on the element itself,
+   so the colors live on the track/thumb pseudo-elements. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* --pct (0-100) is set per-render by the component; Chromium has no fill
+   pseudo-element, so the played portion is a hard-stop gradient */
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--slider-fill) calc(var(--pct, 0) * 1%),
+    var(--slider-track) calc(var(--pct, 0) * 1%)
+  );
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* required again — the thumb doesn't inherit it */
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--slider-thumb);
+  margin-top: -4px; /* (thumb 12 - track 4) / 2, centers it on the track */
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+}
+
+input[type="range"]:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+/* Fades content out as it scrolls under the top edge. A mask rather than a gradient
+   overlay, so there's no background color for a theme to keep in sync — it fades to
+   real transparency and whatever is behind shows through.
+   --fade-h is driven by scroll position, so at the top of the list there's no fade
+   washing out the first row. */
+.scroll-fade {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
+  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
 }
 
 .logo {

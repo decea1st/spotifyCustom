@@ -28,4 +28,3 @@ windows = { version = "0.61", features = [
   "Win32_UI_Shell",                # SetWindowSubclass, DefSubclassProc
   "Win32_UI_WindowsAndMessaging",  # WM_SIZING and the WMSZ_* constants
 ] }
-

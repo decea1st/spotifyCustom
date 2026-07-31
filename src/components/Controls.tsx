@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { getActiveDevice } from "../userdata/spotifyApi";
 import { usePlayerContext } from "../player/PlayerContext";
 import type { RemotePlayback } from "../types";
@@ -9,6 +9,7 @@ export default function Controls() {
     const [trackPosition, setTrackPosition] = useState(0);
     const [remote, setRemote] = useState<RemotePlayback | null>(null);
     const [remoteAt, setRemoteAt] = useState(0);
+    const [volume, setVol] = useState(0.3);
     const local = !!state; // is music playing here or remote device?
 
     const track = local ? state.track_window.current_track : remote?.item;
@@ -46,7 +47,7 @@ export default function Controls() {
     }, [positionAt, anchorTime, playing]);
     
     return (
-        <div className="relative w-full h-[70px] shrink-0 bg-[#a03939] border-t border-zinc-700 flex items-center justify-center gap-6">
+        <div className="relative w-full h-[70px] shrink-0 bg-[var(--bar)] border-t border-[var(--divider)] flex items-center justify-center gap-6">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
                 {image && (
                     <img
@@ -56,9 +57,9 @@ export default function Controls() {
                     />
                 )}
                 <div className="flex flex-col min-w-0">
-                    {name && <p className="text-white text-[13.5px] font-medium truncate">{name}</p>}
+                    {name && <p className="text-[var(--text-on-card)] text-[13.5px] font-medium truncate">{name}</p>}
                     {artists && artists.length > 0 && (
-                        <p className="text-zinc-400 text-[13px] truncate">
+                        <p className="text-[var(--text-on-card-muted)] text-[13px] truncate">
                             {artists.map((a) => a.name).join(", ")}
                         </p>
                     )}
@@ -70,7 +71,7 @@ export default function Controls() {
                     <button
                         onClick={prev}
                         disabled={disabled}
-                        className="cursor-pointer text-white disabled:cursor-default disabled:opacity-40"
+                        className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
                     >
                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M6 5h2v14H6zM20 5v14L9 12z" />
@@ -80,7 +81,7 @@ export default function Controls() {
                     <button
                         onClick={togglePlay}
                         disabled={disabled}
-                        className="cursor-pointer w-10 h-10 rounded-full bg-zinc-700 text-white flex items-center justify-center hover:bg-zinc-600 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-zinc-700"
+                        className="cursor-pointer w-9 h-9 rounded-full bg-[var(--play-bg)] text-[var(--play-icon)] flex items-center justify-center transition duration-150 hover:bg-[var(--play-bg-hover)] hover:scale-105 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-[var(--play-bg)] disabled:hover:scale-100"
                     >
                         {paused ? (
                             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
@@ -96,7 +97,7 @@ export default function Controls() {
                     <button
                         onClick={next}
                         disabled={disabled}
-                        className="cursor-pointer text-white disabled:cursor-default disabled:opacity-40"
+                        className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
                     >
                         <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M16 5h2v14h-2zM4 5v14l11-7z" />
@@ -109,7 +110,9 @@ export default function Controls() {
                     min={0}
                     max={duration}
                     value={trackPosition}
-                    className="w-full h-1 bg-zinc-700 rounded-full"
+                    readOnly
+                    style={{ "--pct": duration ? (trackPosition / duration) * 100 : 0 } as CSSProperties}
+                    className="w-full"
                 />
             </div>
 
@@ -118,13 +121,18 @@ export default function Controls() {
                     type="range"
                     min={0}
                     max={1}
-                    defaultValue={0.3}
-                    onChange={(e) => setVolume(Number(e.target.value))}
+                    value={volume}
+                    onChange={(e) => {
+                        const v = Number(e.target.value);
+                        setVol(v);
+                        setVolume(v);
+                    }}
                     step={0.01}
-                    className="w-24 h-1 bg-zinc-700 rounded-full"
+                    style={{ "--pct": volume * 100 } as CSSProperties}
+                    className="w-24"
                 />
                 {deviceName && (
-                    <p className="w-full text-right text-zinc-300 text-[13px] truncate">
+                    <p className="w-full text-right text-[var(--text-on-card-muted)] text-[13px] truncate">
                         Playing on {deviceName}
                     </p>
                 )}
