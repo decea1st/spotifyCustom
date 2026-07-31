@@ -34,8 +34,8 @@ function App() {
   }, [loggedIn]);
 
   return (
-    // outer box holds the frame's aspect ratio so the art scales without distorting
-    <div data-tauri-drag-region className="relative h-screen aspect-[909/1506] mx-auto">
+    // the window itself is aspect-locked in Rust, so the frame just fills it
+    <div data-tauri-drag-region className="fixed inset-0 overflow-hidden">
       {/* content sits under the frame, inset to the PNG's cutout */}
       <div className="absolute top-[26.15%] right-[8.8%] bottom-[9%] left-[8.8%] rounded-[8px] overflow-hidden">
         <div className="flex flex-col h-full bg-[#e8dbdb]">
@@ -49,10 +49,10 @@ function App() {
                     <SearchBar className="w-full max-w-[700px] p-3 px-3" />
                     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-3 pb-3 w-full">
                       {playlists.map((p) => (
-                        <button key={p.id} className="cursor-pointer bg-[#833434] text-left rounded-lg p-3 hover:bg-[#a44141] transition-colors duration-150" onClick={() => setSelected(p)}>
+                        <button key={p.id} className="cursor-pointer bg-[#ed844a]/80 text-left rounded-lg p-3 hover:bg-[#ed844a] transition-colors duration-150" onClick={() => setSelected(p)}>
                           <img src={p.images?.[0]?.url} alt="" className="w-full aspect-square object-cover rounded-md mb-2 bg-zinc-700" />
-                          <p className="text-white text-sm font-medium truncate">{p.name}</p>
-                          <p className="text-zinc-400 text-xs">{p.items?.total ?? 0} tracks</p>
+                          <p className="text-gray-800 text-sm font-medium truncate">{p.name}</p>
+                          <p className="text-zinc-700 text-xs">{p.items?.total ?? 0} tracks</p>
                         </button>
                       ))}
                     </div>

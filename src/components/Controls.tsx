@@ -46,7 +46,7 @@ export default function Controls() {
     }, [positionAt, anchorTime, playing]);
     
     return (
-        <div className="relative w-full h-[70px] shrink-0 bg-[#a03939] border-t border-zinc-700 flex items-center justify-center gap-6">
+        <div className="relative w-full h-[70px] shrink-0 bg-[#ed844a] border-t border-zinc-700 flex items-center justify-center gap-6">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
                 {image && (
                     <img
