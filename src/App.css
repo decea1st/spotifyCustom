@@ -131,15 +131,7 @@ input[type="range"]:disabled {
   opacity: 0.4;
 }
 
-/* The seek bar doubles as the control bar's top border, so it has to shed every
-   part of the native widget that reads as a control. Each rule below undoes one:
-   the UA's side margins would hold it off the corners, the pill radius would
-   round the ends of a full-bleed line, and the thumb rides up on a negative
-   margin so it would float above the bar's edge.
-
-   Selectors keep the input[type="range"] prefix so they outweigh the generic
-   slider rules above — a bare .seek is the lower specificity of the two and
-   would lose to them no matter where it sits in the file. */
+/* The seek bar doubles as the control bar's top */
 input[type="range"].seek {
   /* remap rather than restate the gradient: custom properties inherit into the
      shadow pseudo-elements (the same way --pct does), so the track rule above
@@ -164,11 +156,58 @@ input[type="range"].seek::-webkit-slider-thumb {
   opacity: 0;
 }
 
-/* Fades content out as it scrolls under the top edge. A mask rather than a gradient
-   overlay, so there's no background color for a theme to keep in sync — it fades to
-   real transparency and whatever is behind shows through.
-   --fade-h is driven by scroll position, so at the top of the list there's no fade
-   washing out the first row. */
+@container (max-width: 420px) {
+  input[type="range"].volume {
+    writing-mode: vertical-lr;
+    direction: rtl;
+    width: 4px;
+    height: 40px;
+  }
+
+  input[type="range"].volume::-webkit-slider-runnable-track {
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(
+      to top,
+      var(--slider-fill) calc(var(--pct, 0) * 1%),
+      var(--slider-track) calc(var(--pct, 0) * 1%)
+    );
+  }
+
+  input[type="range"].volume::-webkit-slider-thumb {
+    margin-top: 0;
+    margin-left: -4px;
+  }
+
+  .device-name {
+    display: none;
+  }
+
+  /* no device name so different top% */
+  .volume-group {
+    top: 50%;
+  }
+}
+
+/* Below 420 , controls and volume slider moves to the right. */
+@container (max-width: 420px) {
+  .transport {
+    position: absolute;
+    top: 50%;
+    right: 3rem; /* clears the vertical volume slider and its overhanging thumb */
+    transform: translateY(-50%);
+    width: auto; /* was w-[40%] */
+    max-width: none; /* was max-w-[600px] */
+  }
+
+  /* When controls are pinned to the right, the track info shouldn't truncate early. */
+  .track-info {
+    right: 12.5rem;
+    max-width: none;
+  }
+}
+
+/* Fades content at the top edge. A mask instead of gradient overlay --fade-h is driven by scroll position. */
 .scroll-fade {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
   mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));

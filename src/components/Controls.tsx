@@ -47,7 +47,7 @@ export default function Controls() {
     }, [positionAt, anchorTime, playing]);
     
     return (
-        <div className="relative w-full h-[70px] shrink-0 bg-[var(--bar)] flex items-center justify-center gap-6">
+        <div className="@container relative w-full h-[70px] shrink-0 bg-[var(--bar)] flex items-center justify-center gap-6">
             <input
                 type="range"
                 min={0}
@@ -57,7 +57,7 @@ export default function Controls() {
                 style={{ "--pct": duration ? (trackPosition / duration) * 100 : 0 } as CSSProperties}
                 className="seek absolute -top-0.5 left-0 w-full"
             />
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
+            <div className="track-info absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
                 {image && (
                     <img
                         src={image}
@@ -75,7 +75,7 @@ export default function Controls() {
                 </div>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 w-[40%] max-w-[600px]">
+            <div className="transport flex flex-col items-center gap-1.5 w-[40%] max-w-[600px]">
                 <div className="flex items-center gap-6">
                     <button
                         onClick={prev}
@@ -115,7 +115,7 @@ export default function Controls() {
                 </div>
             </div>
 
-            <div className="absolute right-4 top-3/5 -translate-y-1/2 flex flex-col items-end gap-1.5 max-w-[25%]">
+            <div className="volume-group absolute right-4 top-3/5 -translate-y-1/2 flex flex-col items-end gap-1.5 max-w-[25%]">
                 <input
                     type="range"
                     min={0}
@@ -128,10 +128,10 @@ export default function Controls() {
                     }}
                     step={0.01}
                     style={{ "--pct": volume * 100 } as CSSProperties}
-                    className="w-24"
+                    className="volume w-24"
                 />
                 {deviceName && (
-                    <p className="w-full text-right text-[var(--text-on-card-muted)] text-[13px] truncate">
+                    <p className="device-name w-full text-right text-[var(--text-on-card-muted)] text-[13px] truncate">
                         Playing on {deviceName}
                     </p>
                 )}
