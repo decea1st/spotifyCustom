@@ -44,8 +44,8 @@ export default function PlaylistView({ playlist, onBack }: Props) {
           className="w-30 h-30 object-cover rounded-md bg-[var(--art-on-panel)]"
         />
         <div>
-          <h1 className="text-[var(--text)] text-3xl font-semibold">{playlist.name}</h1>
-          <p className="text-[var(--text-muted)] text-sm mt-1">
+          <h1 className="text-[var(--text)] text-[28px] leading-tight font-semibold">{playlist.name}</h1>
+          <p className="text-[var(--text-muted)] text-md mt-1">
             {playlist.items?.total ?? 0} tracks
           </p>
         </div>
@@ -63,13 +63,13 @@ export default function PlaylistView({ playlist, onBack }: Props) {
               <img
                 src={row.item?.album?.images?.[0]?.url}
                 alt=""
-                className="w-10 h-10 rounded bg-[var(--art-on-panel)]"
+                className="w-11 h-11 rounded bg-[var(--art-on-panel)]"
               />
               <div className="min-w-0 flex-1">
-                <p className="text-[var(--text)] group-hover:text-[var(--text-on-card)] transition-colors duration-150 text-sm truncate">
+                <p className="text-[var(--text)] group-hover:text-[var(--text-on-card)] transition-colors duration-150 text-[18px] truncate">
                   {row.item?.name ?? "Unavailable"}
                 </p>
-                <p className="text-[var(--text-muted)] group-hover:text-[var(--text-on-card-muted)] transition-colors duration-150 text-xs truncate">
+                <p className="text-[var(--text-muted)] group-hover:text-[var(--text-on-card-muted)] text-[16px] font-bold truncate transition-colors duration-150">
                   {row.item?.artists?.map((a: any) => a.name).join(", ")}
                 </p>
               </div>

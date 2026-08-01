@@ -47,13 +47,22 @@ export default function Controls() {
     }, [positionAt, anchorTime, playing]);
     
     return (
-        <div className="relative w-full h-[70px] shrink-0 bg-[var(--bar)] border-t border-[var(--divider)] flex items-center justify-center gap-6">
+        <div className="relative w-full h-[70px] shrink-0 bg-[var(--bar)] flex items-center justify-center gap-6">
+            <input
+                type="range"
+                min={0}
+                max={duration}
+                value={trackPosition}
+                readOnly
+                style={{ "--pct": duration ? (trackPosition / duration) * 100 : 0 } as CSSProperties}
+                className="seek absolute -top-0.5 left-0 w-full"
+            />
             <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
                 {image && (
                     <img
                         src={image}
                         alt=""
-                        className="w-14 h-14 rounded object-cover shrink-0"
+                        className="w-11 h-11 rounded object-cover shrink-0"
                     />
                 )}
                 <div className="flex flex-col min-w-0">
@@ -104,16 +113,6 @@ export default function Controls() {
                         </svg>
                     </button>
                 </div>
-
-                <input
-                    type="range"
-                    min={0}
-                    max={duration}
-                    value={trackPosition}
-                    readOnly
-                    style={{ "--pct": duration ? (trackPosition / duration) * 100 : 0 } as CSSProperties}
-                    className="w-full"
-                />
             </div>
 
             <div className="absolute right-4 top-3/5 -translate-y-1/2 flex flex-col items-end gap-1.5 max-w-[25%]">

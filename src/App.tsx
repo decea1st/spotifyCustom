@@ -69,8 +69,8 @@ function App() {
                     {playlists.map((p) => (
                       <button key={p.id} className="group cursor-pointer bg-[var(--card)] text-left rounded-lg p-3 hover:opacity-90 transition-opacity duration-150" onClick={() => setSelected(p)}>
                         <img src={p.images?.[0]?.url} alt="" className="w-full aspect-square object-cover rounded-md mb-2 bg-[var(--art-on-card)] group-hover:opacity-90 transition-opacity duration-150" />
-                        <p className="text-[var(--text-on-card)] text-sm font-medium truncate">{p.name}</p>
-                        <p className="text-[var(--text-on-card-muted)] text-xs">{p.items?.total ?? 0} tracks</p>
+                        <p className="text-[var(--text-on-card)] text-lg font-medium truncate">{p.name}</p>
+                        <p className="text-[var(--text-on-card-muted)] text-sm">{p.items?.total ?? 0} tracks</p>
                       </button>
                     ))}
                   </div>

@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Drawing Doodle";
-  src: url("./assets/fonts/DrawingDoodle-Regular.otf") format("opentype");
-  font-weight: 200;
+  font-family: "Sugar Groovy";
+  src: url("./assets/fonts/bobogie-groovy.regular.otf") format("opentype");
+  font-weight: 100 900;
   font-display: block;
 }
 
 @theme {
-  --font-sans: "Drawing Doodle", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Sugar Groovy", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ---------------------------------------------------------------------------
@@ -52,10 +52,18 @@
   --play-bg-hover: #ffffff;
   --play-icon: #c53939;
 
-  /* sliders */
+  /* volume slider — sits on the bar, so it reads against --bar */
   --slider-fill: #f6c1c9;
   --slider-thumb: #fffafa;
   --slider-track: rgb(0 0 0 / 0.22);
+
+  /* seek bar — sits on the panel/bar seam, so it reads against --panel instead,
+     and can't share the volume slider's colors. Deeper than the volume fill on
+     purpose: the pale panel needs the extra depth for progress to be readable
+     at a glance. Unplayed is the divider line, which is what draws the bar's
+     top border now that the border-t is gone. */
+  --seek-fill: #d95c72;
+  --seek-track: var(--divider);
 
   /* scrollbar */
   --scrollbar-thumb: rgb(0 0 0 / 0.25);
@@ -121,6 +129,39 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]:disabled {
   cursor: default;
   opacity: 0.4;
+}
+
+/* The seek bar doubles as the control bar's top border, so it has to shed every
+   part of the native widget that reads as a control. Each rule below undoes one:
+   the UA's side margins would hold it off the corners, the pill radius would
+   round the ends of a full-bleed line, and the thumb rides up on a negative
+   margin so it would float above the bar's edge.
+
+   Selectors keep the input[type="range"] prefix so they outweigh the generic
+   slider rules above — a bare .seek is the lower specificity of the two and
+   would lose to them no matter where it sits in the file. */
+input[type="range"].seek {
+  /* remap rather than restate the gradient: custom properties inherit into the
+     shadow pseudo-elements (the same way --pct does), so the track rule above
+     picks these up unchanged */
+  --slider-fill: var(--seek-fill);
+  --slider-track: var(--seek-track);
+
+  height: 3px; /* on the element too, so it can sit flush against the edge */
+  margin: 0;
+  display: block;
+}
+
+input[type="range"].seek::-webkit-slider-runnable-track {
+  height: 3px;
+  border-radius: 0;
+}
+
+/* collapsed rather than display:none, which would keep it focusable for
+   whenever seeking gets wired up */
+input[type="range"].seek::-webkit-slider-thumb {
+  width: 0;
+  opacity: 0;
 }
 
 /* Fades content out as it scrolls under the top edge. A mask rather than a gradient
