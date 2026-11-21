@@ -79,3 +79,25 @@ export async function transferPlayback(deviceId: string) {
         body: JSON.stringify({ device_ids: [deviceId] }),
     });
 }
+
+// Remote-control commands. With no device_id they act on whichever device is active.
+export async function pausePlayback() {
+    await spotifyFetch(`/me/player/pause`, { method: "PUT" });
+}
+
+// No body means "resume what was playing", unlike playTracks which starts something new
+export async function resumePlayback() {
+    await spotifyFetch(`/me/player/play`, { method: "PUT" });
+}
+
+export async function skipNext() {
+    await spotifyFetch(`/me/player/next`, { method: "POST" });
+}
+
+export async function skipPrevious() {
+    await spotifyFetch(`/me/player/previous`, { method: "POST" });
+}
+
+export async function seekPlayback(positionMs: number) {
+    await spotifyFetch(`/me/player/seek?position_ms=${Math.round(positionMs)}`, { method: "PUT" });
+}

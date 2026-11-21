@@ -5,13 +5,23 @@ import { useNav, useView } from "../nav/useNav";
 import IconButton from "./IconButton";
 
 export default function Controls() {
-    const { deviceId, togglePlay, prev, next, setVolume } = usePlayerContext();
+    const { state, remote, togglePlay, prev, next, seek, setVolume } = usePlayerContext();
     const { track, image, playing, position, duration, deviceName } = useNowPlaying();
     const view = useView();
     const go = useNav((s) => s.go);
     const back = useNav((s) => s.back);
     const [volume, setVol] = useState(0.3);
-    const disabled = !deviceId;
+    const disabled = !state && !remote; // no session here or on any other device
+
+    // Where the seek bar is held while dragging, null otherwise. The seek is only sent on
+    // release, so dragging across a song is one request instead of one per pixel.
+    const [dragPosition, setDragPosition] = useState<number | null>(null);
+    const shownPosition = dragPosition ?? position;
+    const commitSeek = () => {
+        if (dragPosition === null) return;
+        seek(dragPosition);
+        setDragPosition(null);
+    };
 
     // the device label toggles the Devices screen, like the button in Spotify's own bar
     const toggleDevices = () => (view.name === "devices" ? back() : go({ name: "devices" }));
@@ -22,9 +32,13 @@ export default function Controls() {
                 type="range"
                 min={0}
                 max={duration}
-                value={position}
-                readOnly
-                style={{ "--pct": duration ? (position / duration) * 100 : 0 } as CSSProperties}
+                value={shownPosition}
+                onChange={(e) => setDragPosition(Number(e.target.value))}
+                // captured so the release still lands here if the pointer has left the 3px bar
+                onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
+                onPointerUp={commitSeek}
+                onKeyUp={commitSeek} // arrow keys
+                style={{ "--pct": duration ? (shownPosition / duration) * 100 : 0 } as CSSProperties}
                 className="seek absolute -top-0.5 left-0 w-full"
             />
             <div className="track-info absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
