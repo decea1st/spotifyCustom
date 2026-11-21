@@ -6,12 +6,15 @@ import PlaylistView from "./components/PlaylistView";
 import { getUserPlaylists } from "./userdata/spotifyApi";
 import Controls from "./components/Controls";
 import SearchBar from "./components/SearchBar";
+import DeviceView from "./components/DeviceView";
 
 function App() {
   const ranOnce = useRef(false);
   const [loggedIn, setLoggedIn] = useState(() => !!localStorage.getItem('access_token'))
   const [playlists, setPlaylists] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null); // which playlist is selected. Null to view grid
+  // sits on top of the grid/playlist rather than replacing `selected`, so Back returns to wherever you were
+  const [showDevices, setShowDevices] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
 
   // written straight to the DOM node instead of through state — this fires on every
@@ -52,7 +55,7 @@ function App() {
           {loggedIn ? (
             <>
               {/* outside the scroller so the results dropdown isn't clipped by it */}
-              {!selected && (
+              {!selected && !showDevices && (
                 <div className="w-full shrink-0 flex justify-center">
                   <SearchBar className="w-full max-w-[700px] p-3 px-3" />
                 </div>
@@ -62,7 +65,9 @@ function App() {
                 onScroll={handleScroll}
                 className="scroll-fade flex-1 overflow-y-auto flex flex-col items-center w-full"
               >
-                {selected ? (
+                {showDevices ? (
+                  <DeviceView onBack={() => setShowDevices(false)} />
+                ) : selected ? (
                   <PlaylistView playlist={selected} onBack={() => setSelected(null)} />
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-3 pb-3 w-full">
@@ -76,7 +81,7 @@ function App() {
                   </div>
                 )}
               </div>
-              <Controls />
+              <Controls onOpenDevices={() => setShowDevices(true)} />
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center">

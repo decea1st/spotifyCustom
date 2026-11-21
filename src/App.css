@@ -187,10 +187,8 @@ input[type="range"].seek::-webkit-slider-thumb {
   .volume-group {
     top: 50%;
   }
-}
 
-/* Below 420 , controls and volume slider moves to the right. */
-@container (max-width: 420px) {
+  /* Below 420 , controls and volume slider moves to the right. */
   .transport {
     position: absolute;
     top: 50%;

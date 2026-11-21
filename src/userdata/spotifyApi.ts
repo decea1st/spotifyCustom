@@ -1,5 +1,6 @@
 // This file fetches the user's info like playlists
 import { refreshAccessToken  } from "../auth/spotifyAuth";
+import type { Device } from "../types";
 
 // Every spotify endpoint needs tthe same three things so this wrapper
 // makes the calls easier by coding them in
@@ -59,4 +60,20 @@ export async function getActiveDevice() {
     const res = await spotifyFetch(`/me/player`)
     if (res.status == 204) return null;
     return (await res.json());
+}
+
+// Only devices currently connected to Spotify are listed. A phone with the app
+// closed won't show up even though the official app can wake it.
+export async function getDevices(): Promise<Device[]> {
+    const res = await spotifyFetch(`/me/player/devices`);
+    return (await res.json()).devices;
+}
+
+// Leaving out `play` keeps the current state, so paused stays paused on the new device
+export async function transferPlayback(deviceId: string) {
+    await spotifyFetch(`/me/player`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ device_ids: [deviceId] })
+    })
 }

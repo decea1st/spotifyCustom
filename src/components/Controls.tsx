@@ -3,7 +3,7 @@ import { getActiveDevice } from "../userdata/spotifyApi";
 import { usePlayerContext } from "../player/PlayerContext";
 import type { RemotePlayback } from "../types";
 
-export default function Controls() {
+export default function Controls({ onOpenDevices }: { onOpenDevices: () => void }) {
     const { state, deviceId, togglePlay, prev, next, setVolume } = usePlayerContext();
     const disabled = !deviceId
     const [trackPosition, setTrackPosition] = useState(0);
@@ -16,7 +16,6 @@ export default function Controls() {
     const image = track?.album?.images?.[0]?.url;
     const name = track?.name;
     const artists = track?.artists;
-    const paused = local ? state?.paused : !remote?.is_playing;
     const deviceName = local ? "YouSpot" : remote?.device?.name;
     const positionAt = local ? state.position  : remote?.progress_ms ?? 0;
     const anchorTime = local ? state.timestamp : remoteAt;
@@ -47,7 +46,7 @@ export default function Controls() {
     }, [positionAt, anchorTime, playing]);
     
     return (
-        <div className="@container relative w-full h-[70px] shrink-0 bg-[var(--bar)] flex items-center justify-center gap-6">
+        <div className="@container relative w-full h-[70px] shrink-0 bg-[var(--bar)] flex items-center justify-center">
             <input
                 type="range"
                 min={0}
@@ -75,44 +74,42 @@ export default function Controls() {
                 </div>
             </div>
 
-            <div className="transport flex flex-col items-center gap-1.5 w-[40%] max-w-[600px]">
-                <div className="flex items-center gap-6">
-                    <button
-                        onClick={prev}
-                        disabled={disabled}
-                        className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
-                    >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                            <path d="M6 5h2v14H6zM20 5v14L9 12z" />
-                        </svg>
-                    </button>
+            <div className="transport flex items-center justify-center gap-3 w-[40%] max-w-[600px]">
+                <button
+                    onClick={prev}
+                    disabled={disabled}
+                    className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
+                >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path d="M6 5h2v14H6zM20 5v14L9 12z" />
+                    </svg>
+                </button>
 
-                    <button
-                        onClick={togglePlay}
-                        disabled={disabled}
-                        className="cursor-pointer w-9 h-9 rounded-full bg-[var(--play-bg)] text-[var(--play-icon)] flex items-center justify-center transition duration-150 hover:bg-[var(--play-bg-hover)] hover:scale-105 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-[var(--play-bg)] disabled:hover:scale-100"
-                    >
-                        {paused ? (
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                        ) : (
-                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                                <path d="M8 5h3v14H8zM13 5h3v14h-3z" />
-                            </svg>
-                        )}
-                    </button>
-
-                    <button
-                        onClick={next}
-                        disabled={disabled}
-                        className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
-                    >
-                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                            <path d="M16 5h2v14h-2zM4 5v14l11-7z" />
+                <button
+                    onClick={togglePlay}
+                    disabled={disabled}
+                    className="cursor-pointer w-9 h-9 rounded-full bg-[var(--play-bg)] text-[var(--play-icon)] flex items-center justify-center transition duration-150 hover:bg-[var(--play-bg-hover)] hover:scale-105 disabled:cursor-default disabled:opacity-40 disabled:hover:bg-[var(--play-bg)] disabled:hover:scale-100"
+                >
+                    {playing ? (
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                            <path d="M8 5h3v14H8zM13 5h3v14h-3z" />
                         </svg>
-                    </button>
-                </div>
+                    ) : (
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 ml-0.5">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                    )}
+                </button>
+
+                <button
+                    onClick={next}
+                    disabled={disabled}
+                    className="cursor-pointer text-[var(--text-on-card-muted)] transition duration-150 hover:text-[var(--text-on-card)] disabled:cursor-default disabled:opacity-40 disabled:hover:text-[var(--text-on-card-muted)]"
+                >
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path d="M16 5h2v14h-2zM4 5v14l11-7z" />
+                    </svg>
+                </button>
             </div>
 
             <div className="volume-group absolute right-4 top-3/5 -translate-y-1/2 flex flex-col items-end gap-1.5 max-w-[25%]">
@@ -131,9 +128,12 @@ export default function Controls() {
                     className="volume w-24"
                 />
                 {deviceName && (
-                    <p className="device-name w-full text-right text-[var(--text-on-card-muted)] text-[13px] truncate">
+                    <button
+                        onClick={onOpenDevices}
+                        className="device-name w-full text-right text-[var(--text-on-card-muted)] text-[13px] truncate cursor-pointer transition-colors duration-150 hover:text-[var(--text-on-card)]"
+                    >
                         Playing on {deviceName}
-                    </p>
+                    </button>
                 )}
             </div>
         </div>
