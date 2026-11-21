@@ -53,6 +53,23 @@ export type Track = {
     external_urls: ExternalUrls;
 };
 
+// GET /me/playlists. Only the fields this app reads are typed; add more from a
+// real response as they're needed.
+export type Playlist = {
+    id: string;
+    name: string;
+    uri: string;
+    images: Image[] | null; // null when the playlist has no cover yet
+    items?: { href: string; total: number };
+};
+
+// One row of GET /playlists/{id}/items. `item` is null when the track has been
+// pulled from Spotify, which is what the "Unavailable" row shows.
+export type PlaylistItem = {
+    added_at: string;
+    item: Track | null;
+};
+
 export type Device = {
     // null when the device is inactive or restricted
     id: string | null;

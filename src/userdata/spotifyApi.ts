@@ -1,6 +1,6 @@
 // This file fetches the user's info like playlists
 import { refreshAccessToken  } from "../auth/spotifyAuth";
-import type { Device } from "../types";
+import type { Device, Playlist, PlaylistItem, RemotePlayback, Track } from "../types";
 
 // Every spotify endpoint needs tthe same three things so this wrapper
 // makes the calls easier by coding them in
@@ -22,17 +22,17 @@ async function spotifyFetch(path: string, init: RequestInit = {}) {
     return res;
 }
 // Every playlist will return an `id` which can be used to view the tracklist
-export async function getUserPlaylists() {
+export async function getUserPlaylists(): Promise<Playlist[]> {
     const res = await spotifyFetch("/me/playlists?limit=50");
     return (await res.json()).items;
 }
 // Returns pages of tracks. Contains an items array containing objects for each track in the page
 // A track object will have the `item` field which holds ANOTHER object with info about the track
-export async function getPlaylistItems(id: string) {
+export async function getPlaylistItems(id: string): Promise<PlaylistItem[]> {
     const res = await spotifyFetch(`/playlists/${id}/items?limit=100`);
     return (await res.json()).items;
 }
-export async function searchTracks(q: string) {
+export async function searchTracks(q: string): Promise<Track[]> {
     const res = await spotifyFetch(`/search?q=${encodeURIComponent(q)}&type=track&limit=10`);
     return (await res.json()).tracks.items;
 }
@@ -56,7 +56,7 @@ export async function playPlaylistTrack(deviceId: string, contextUri: string, tr
     })
 }
 
-export async function getActiveDevice() {
+export async function getActiveDevice(): Promise<RemotePlayback | null> {
     const res = await spotifyFetch(`/me/player`)
     if (res.status == 204) return null;
     return (await res.json());

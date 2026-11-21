@@ -32,9 +32,9 @@
   --divider: rgb(0 0 0 / 0.15);
 
   /* text on the panel */
-  --text: #000000;
-  --text-muted: #4a3a3a;    /* artist names, track counts */
-  --text-faint: #7f6666;    /* list numbers, durations */
+  --text-on-panel: #000000;
+  --text-on-panel-muted: #4a3a3a;    /* artist names, track counts */
+  --text-on-panel-faint: #7f6666;    /* list numbers, durations */
 
   /* text on red surfaces */
   --text-on-card: #ffffff;
@@ -68,6 +68,33 @@
   /* scrollbar */
   --scrollbar-thumb: rgb(0 0 0 / 0.25);
   --scrollbar-thumb-hover: rgb(0 0 0 / 0.4);
+}
+
+/* Exposes the palette above as Tailwind colors, so JSX can say `bg-card` /
+   `text-on-card` instead of `bg-[var(--card)]`. `inline` makes each utility
+   read the :root variable directly, so a theme overriding :root still wins.
+   The slider, seek and scrollbar colors are only used in plain CSS below, so
+   they don't need entries. */
+@theme inline {
+  --color-panel: var(--panel);
+  --color-bar: var(--bar);
+  --color-card: var(--card);
+  --color-card-accent: var(--card-accent);
+  --color-divider: var(--divider);
+
+  --color-on-panel: var(--text-on-panel);
+  --color-on-panel-muted: var(--text-on-panel-muted);
+  --color-on-panel-faint: var(--text-on-panel-faint);
+  --color-on-card: var(--text-on-card);
+  --color-on-card-muted: var(--text-on-card-muted);
+
+  --color-overlay-hover: var(--overlay-hover);
+  --color-art-on-panel: var(--art-on-panel);
+  --color-art-on-card: var(--art-on-card);
+
+  --color-play: var(--play-bg);
+  --color-play-hover: var(--play-bg-hover);
+  --color-play-icon: var(--play-icon);
 }
 
 /* the window is transparent, so no layer above the frame art may paint a background */

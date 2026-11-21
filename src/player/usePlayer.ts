@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { checkStaleToken } from "../auth/spotifyAuth";
+import { getActiveDevice } from "../userdata/spotifyApi";
+import type { RemotePlayback } from "../types";
 
 // All my code so far talks to a remote control API. "/me/player/play" is simply sending an instruction
 // saying "play this track on this device." I need to use the Spotify Web Playback SDK to give this app
@@ -19,6 +21,29 @@ export function usePlayer() {
     const prev = () => player.current?.previousTrack();
     const setVolume = (v: number) => player.current?.setVolume(v ** volumeCurve);
     const volumeCurve = 3.4;
+
+    // Playback on another device. The SDK only reports what plays in this app,
+    // so anything elsewhere has to be polled from the Web API.
+    const [remote, setRemote] = useState<RemotePlayback | null>(null);
+    const [remoteAt, setRemoteAt] = useState(0); // when `remote` was fetched, to tick progress from
+
+    const refreshRemote = useCallback(() => {
+        // this provider is mounted before login too, and every call would 401
+        if (!localStorage.getItem("access_token")) return;
+        getActiveDevice()
+            .then((r) => {
+                setRemote(r);
+                setRemoteAt(Date.now());
+            })
+            .catch(console.error);
+    }, []);
+
+    useEffect(() => {
+        if (state) return; // playback is happening here, the SDK covers it
+        refreshRemote();
+        const id = setInterval(refreshRemote, 2500);
+        return () => clearInterval(id);
+    }, [state, refreshRemote]);
 
     useEffect(() => {
         // define the global first
@@ -66,5 +91,5 @@ export function usePlayer() {
         };
     }, []);
 
-    return { deviceId, state, togglePlay, seek, next, prev, setVolume };
+    return { deviceId, state, remote, remoteAt, refreshRemote, togglePlay, seek, next, prev, setVolume };
 }
