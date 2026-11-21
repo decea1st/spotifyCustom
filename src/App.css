@@ -63,7 +63,12 @@
      at a glance. Unplayed is the divider line, which is what draws the bar's
      top border now that the border-t is gone. */
     --seek-fill: #d95c72;
+    --seek-fill-hover: #c23a55; /* while hovered or dragged, so it reads as grabbable */
     --seek-track: var(--divider);
+
+    /* the time label above the seek bar while hovering or dragging it */
+    --tooltip-bg: var(--bar);
+    --tooltip-text: var(--text-on-card);
 
     /* scrollbar */
     --scrollbar-thumb: rgb(0 0 0 / 0.25);
@@ -95,6 +100,9 @@
     --color-play: var(--play-bg);
     --color-play-hover: var(--play-bg-hover);
     --color-play-icon: var(--play-icon);
+
+    --color-tooltip: var(--tooltip-bg);
+    --color-tooltip-text: var(--tooltip-text);
 }
 
 /* the window is transparent, so no layer above the frame art may paint a background */
@@ -166,9 +174,18 @@ input[type="range"].seek {
     --slider-fill: var(--seek-fill);
     --slider-track: var(--seek-track);
 
-    height: 3px; /* on the element too, so it can sit flush against the edge */
+    /* The element is the hit area (the web's version of hitSlop); the visible line
+     is the 3px track below, which Chromium centers inside it. Controls.tsx
+     centers the element on the panel/bar seam, so the line sits where it did. */
+    height: 14px;
     margin: 0;
     display: block;
+}
+
+/* :active holds for the whole drag, even once the pointer has left the bar */
+input[type="range"].seek:hover,
+input[type="range"].seek:active {
+    --slider-fill: var(--seek-fill-hover);
 }
 
 input[type="range"].seek::-webkit-slider-runnable-track {
@@ -176,14 +193,14 @@ input[type="range"].seek::-webkit-slider-runnable-track {
     border-radius: 0;
 }
 
-/* collapsed rather than display:none, which would keep it focusable for
-   whenever seeking gets wired up */
+/* no visible thumb: the bar stays a thin line, and the time label shows
+   where you're pointing while hovering or dragging */
 input[type="range"].seek::-webkit-slider-thumb {
     width: 0;
     opacity: 0;
 }
 
-@container (max-width: 420px) {
+@container (max-width: 380px) {
     input[type="range"].volume {
         writing-mode: vertical-lr;
         direction: rtl;
@@ -210,25 +227,30 @@ input[type="range"].seek::-webkit-slider-thumb {
         display: none;
     }
 
-    /* no device name so different top% */
+    /* Below 380px the bar is a plain row: the track info takes whatever the
+       controls don't need, so nothing depends on hard-coded offsets. */
+    .track-info,
+    .transport,
     .volume-group {
-        top: 50%;
+        position: static;
+        translate: none; /* Tailwind's -translate-y-1/2 sets `translate`, not `transform` */
     }
 
-    /* Below 420 , controls and volume slider moves to the right. */
+    .track-info {
+        flex: 1;
+        min-width: 0; /* lets the title truncate instead of pushing the controls off */
+        max-width: none;
+        margin-left: 1rem; /* replaces left-4, which static positioning ignores */
+    }
+
     .transport {
-        position: absolute;
-        top: 50%;
-        right: 3rem; /* clears the vertical volume slider and its overhanging thumb */
-        transform: translateY(-50%);
         width: auto; /* was w-[40%] */
         max-width: none; /* was max-w-[600px] */
+        margin-inline: 0.75rem; /* the gap between the title and the controls */
     }
 
-    /* When controls are pinned to the right, the track info shouldn't truncate early. */
-    .track-info {
-        right: 12.5rem;
-        max-width: none;
+    .volume-group {
+        margin-right: 1rem; /* replaces right-4 */
     }
 }
 

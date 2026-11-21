@@ -1,4 +1,5 @@
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type PointerEvent } from "react";
+import { formatDuration } from "../utils/format";
 import { usePlayerContext } from "../player/PlayerContext";
 import { useNowPlaying } from "../player/useNowPlaying";
 import { useNav, useView } from "../nav/useNav";
@@ -23,6 +24,15 @@ export default function Controls() {
         setDragPosition(null);
     };
 
+    // The time under the pointer while hovering the seek bar, null otherwise
+    const [hoverPosition, setHoverPosition] = useState<number | null>(null);
+    const labelPosition = dragPosition ?? hoverPosition; // a drag wins over hover
+    const timeAtPointer = (e: PointerEvent<HTMLInputElement>) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const fraction = Math.min(Math.max((e.clientX - rect.left) / rect.width, 0), 1);
+        return fraction * duration;
+    };
+
     // the device label toggles the Devices screen, like the button in Spotify's own bar
     const toggleDevices = () => (view.name === "devices" ? back() : go({ name: "devices" }));
 
@@ -37,10 +47,23 @@ export default function Controls() {
                 // captured so the release still lands here if the pointer has left the 3px bar
                 onPointerDown={(e) => e.currentTarget.setPointerCapture(e.pointerId)}
                 onPointerUp={commitSeek}
+                onPointerMove={(e) => setHoverPosition(timeAtPointer(e))}
+                onPointerLeave={() => setHoverPosition(null)}
                 onKeyUp={commitSeek} // arrow keys
                 style={{ "--pct": duration ? (shownPosition / duration) * 100 : 0 } as CSSProperties}
-                className="seek absolute -top-0.5 left-0 w-full"
+                // centered on the seam so the 14px hit area reaches into both the panel and the bar
+                className="seek absolute top-[-0.5px] -translate-y-1/2 left-0 w-full"
             />
+            {labelPosition !== null && duration > 0 && (
+                <div
+                    // Y is fixed to the top of the bar; only `left` follows the pointer.
+                    // clamp() keeps the label from being cut off at the panel's edges.
+                    style={{ left: `clamp(20px, ${(labelPosition / duration) * 100}%, calc(100% - 20px))` }}
+                    className="pointer-events-none absolute bottom-full mb-2 -translate-x-1/2 rounded px-1.5 py-0.5 text-xs whitespace-nowrap tracking-[0.12em] bg-tooltip text-tooltip-text shadow-md shadow-black/25"
+                >
+                    {formatDuration(labelPosition)}
+                </div>
+            )}
             <div className="track-info absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 max-w-[30%]">
                 {image && <img src={image} alt="" className="w-11 h-11 rounded object-cover shrink-0" />}
                 <div className="flex flex-col min-w-0">
