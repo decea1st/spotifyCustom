@@ -3,10 +3,7 @@ import type { Playlist } from "../types";
 
 // Every screen the content area can show. Screens that need data carry it, so
 // TypeScript only allows `view.playlist` once `view.name === "playlist"` is checked.
-export type View =
-    | { name: "grid" }
-    | { name: "playlist"; playlist: Playlist }
-    | { name: "devices" };
+export type View = { name: "grid" } | { name: "playlist"; playlist: Playlist } | { name: "devices" };
 
 type NavState = {
     history: View[];

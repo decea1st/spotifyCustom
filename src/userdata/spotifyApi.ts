@@ -1,24 +1,26 @@
 // This file fetches the user's info like playlists
-import { refreshAccessToken  } from "../auth/spotifyAuth";
+import { refreshAccessToken } from "../auth/spotifyAuth";
 import type { Device, Playlist, PlaylistItem, RemotePlayback, Track } from "../types";
 
 // Every spotify endpoint needs tthe same three things so this wrapper
 // makes the calls easier by coding them in
 async function spotifyFetch(path: string, init: RequestInit = {}) {
-    const call = () => fetch(`https://api.spotify.com/v1${path}`, {
-        ...init,
-        headers: {
-            ...init.headers,
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`
-        }
-    });
+    const call = () =>
+        fetch(`https://api.spotify.com/v1${path}`, {
+            ...init,
+            headers: {
+                ...init.headers,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+        });
 
     let res = await call();
     // 401 means there is no access token, so attempt a refresh
     if (res.status === 401) {
         await refreshAccessToken();
         res = await call();
-    } if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    }
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     return res;
 }
 // Every playlist will return an `id` which can be used to view the tracklist
@@ -41,8 +43,8 @@ export async function playTracks(deviceId: string, uris: string[]) {
     await spotifyFetch(`/me/player/play?device_id=${deviceId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uris })
-    })
+        body: JSON.stringify({ uris }),
+    });
 }
 // ContextUri = Playlist Uri,
 export async function playPlaylistTrack(deviceId: string, contextUri: string, trackUri: string) {
@@ -51,15 +53,15 @@ export async function playPlaylistTrack(deviceId: string, contextUri: string, tr
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             context_uri: contextUri,
-            offset: {"uri": trackUri},
-        })
-    })
+            offset: { uri: trackUri },
+        }),
+    });
 }
 
 export async function getActiveDevice(): Promise<RemotePlayback | null> {
-    const res = await spotifyFetch(`/me/player`)
+    const res = await spotifyFetch(`/me/player`);
     if (res.status == 204) return null;
-    return (await res.json());
+    return await res.json();
 }
 
 // Only devices currently connected to Spotify are listed. A phone with the app
@@ -74,6 +76,6 @@ export async function transferPlayback(deviceId: string) {
     await spotifyFetch(`/me/player`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ device_ids: [deviceId] })
-    })
+        body: JSON.stringify({ device_ids: [deviceId] }),
+    });
 }

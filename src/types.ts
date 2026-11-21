@@ -74,7 +74,19 @@ export type Device = {
     // null when the device is inactive or restricted
     id: string | null;
     name: string;
-    type: "Computer" | "Smartphone" | "Speaker" | "TV" | "AVR" | "STB" | "AudioDongle" | "GameConsole" | "CastVideo" | "CastAudio" | "Automobile" | "Unknown";
+    type:
+        | "Computer"
+        | "Smartphone"
+        | "Speaker"
+        | "TV"
+        | "AVR"
+        | "STB"
+        | "AudioDongle"
+        | "GameConsole"
+        | "CastVideo"
+        | "CastAudio"
+        | "Automobile"
+        | "Unknown";
     is_active: boolean;
     is_private_session: boolean;
     is_restricted: boolean;

@@ -35,11 +35,7 @@ export default function SearchResults({ query }: { query: string }) {
                         disabled={!deviceId}
                         className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-left cursor-pointer hover:bg-overlay-hover transition-colors duration-150 disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent"
                     >
-                        <img
-                            src={t.album?.images?.[0]?.url}
-                            alt=""
-                            className="w-10 h-10 rounded bg-art-on-card"
-                        />
+                        <img src={t.album?.images?.[0]?.url} alt="" className="w-10 h-10 rounded bg-art-on-card" />
                         <div className="min-w-0 flex-1">
                             <p className="text-on-card text-sm truncate">{t.name}</p>
                             <p className="text-on-card-muted text-xs truncate">

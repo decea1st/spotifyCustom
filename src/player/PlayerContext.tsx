@@ -3,7 +3,7 @@ import { usePlayer } from "./usePlayer";
 
 const PlayerContext = createContext<ReturnType<typeof usePlayer> | null>(null);
 
-export function PlayerProvider({ children }: { children: React.ReactNode}) {
+export function PlayerProvider({ children }: { children: React.ReactNode }) {
     const player = usePlayer();
     return <PlayerContext.Provider value={player}>{children}</PlayerContext.Provider>;
 }

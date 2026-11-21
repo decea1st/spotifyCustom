@@ -10,7 +10,9 @@ export default function SearchBar({ className }: { className?: string }) {
             className={className}
             onFocus={() => setFocused(true)}
             // only close when focus leaves the whole block, not when it moves to a result
-            onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false); }}
+            onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false);
+            }}
         >
             <div className="group relative flex items-center gap-2 bg-card rounded-3xl px-4 py-2 focus-within:bg-card-accent transition-colors duration-150">
                 <svg

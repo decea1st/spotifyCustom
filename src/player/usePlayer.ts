@@ -5,10 +5,10 @@ import type { RemotePlayback } from "../types";
 
 // All my code so far talks to a remote control API. "/me/player/play" is simply sending an instruction
 // saying "play this track on this device." I need to use the Spotify Web Playback SDK to give this app
-// a deviceId and become a Spotify Connect device so the tracks can directly play through the app. 
+// a deviceId and become a Spotify Connect device so the tracks can directly play through the app.
 
 // Spotify has a script that looks for a specificly named function in the global and calls it
-// "window.onSpotifyWebPlaybackSDKReady()" makes the function global. That's what "window" does.  
+// "window.onSpotifyWebPlaybackSDKReady()" makes the function global. That's what "window" does.
 export function usePlayer() {
     //useRef so other files can control it (play, pause, etc)
     const player = useRef<Spotify.Player | null>(null);
@@ -55,26 +55,27 @@ export function usePlayer() {
                 // Their cb function receives the token and registers this app as a device in their servers
                 getOAuthToken: async (cb) => {
                     await checkStaleToken();
-                    const token = localStorage.getItem('access_token');
+                    const token = localStorage.getItem("access_token");
                     if (!token) {
                         console.error("getOAuthToken: no access_token in localStorage");
                         return;
-                    } cb(token)
+                    }
+                    cb(token);
                 },
             });
-            
+
             // After token is supplied and it's valid, the class internally updates an object to write the device_id
-            player.current.addListener('ready', ({ device_id }) => {
+            player.current.addListener("ready", ({ device_id }) => {
                 setDeviceId(device_id);
-                console.log('The Web Playback SDK is ready to play music!');
-                console.log('Device ID', device_id);
-            })
-            player.current.addListener('not_ready', ({ device_id }) => {
-                console.log('Device ID has gone offline', device_id);
+                console.log("The Web Playback SDK is ready to play music!");
+                console.log("Device ID", device_id);
             });
-            player.current.addListener('player_state_changed', (s) => {
+            player.current.addListener("not_ready", ({ device_id }) => {
+                console.log("Device ID has gone offline", device_id);
+            });
+            player.current.addListener("player_state_changed", (s) => {
                 setState(s);
-            })
+            });
             player.current.connect();
         };
 

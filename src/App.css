@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Sugar Groovy";
-  src: url("./assets/fonts/bobogie-groovy.regular.otf") format("opentype");
-  font-weight: 100 900;
-  font-display: block;
+    font-family: "Sugar Groovy";
+    src: url("./assets/fonts/bobogie-groovy.regular.otf") format("opentype");
+    font-weight: 100 900;
+    font-display: block;
 }
 
 @theme {
-  --font-sans: "Sugar Groovy", ui-sans-serif, system-ui, sans-serif;
+    --font-sans: "Sugar Groovy", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* ---------------------------------------------------------------------------
@@ -23,51 +23,51 @@
      "frame"  (frame outline pink, louder):  fill #f2b7bd  thumb #ffffff
    --------------------------------------------------------------------------- */
 :root {
-  /* surfaces */
-  --panel: #e8dbdb;         /* content area behind everything */
-  --bar: #c53939;           /* control bar */
-  --card: #b73737;          /* playlist cards, search field, results dropdown,
+    /* surfaces */
+    --panel: #e8dbdb; /* content area behind everything */
+    --bar: #c53939; /* control bar */
+    --card: #b73737; /* playlist cards, search field, results dropdown,
                                and a hovered track row — same "clickable item" */
-  --card-accent: #ba4341;   /* search field while focused */
-  --divider: rgb(0 0 0 / 0.15);
+    --card-accent: #ba4341; /* search field while focused */
+    --divider: rgb(0 0 0 / 0.15);
 
-  /* text on the panel */
-  --text-on-panel: #000000;
-  --text-on-panel-muted: #4a3a3a;    /* artist names, track counts */
-  --text-on-panel-faint: #7f6666;    /* list numbers, durations */
+    /* text on the panel */
+    --text-on-panel: #000000;
+    --text-on-panel-muted: #4a3a3a; /* artist names, track counts */
+    --text-on-panel-faint: #7f6666; /* list numbers, durations */
 
-  /* text on red surfaces */
-  --text-on-card: #ffffff;
-  --text-on-card-muted: rgb(255 255 255 / 0.7);
+    /* text on red surfaces */
+    --text-on-card: #ffffff;
+    --text-on-card-muted: rgb(255 255 255 / 0.7);
 
-  /* hover lift for rows already sitting on a red surface (search results) */
-  --overlay-hover: rgb(255 255 255 / 0.12);
+    /* hover lift for rows already sitting on a red surface (search results) */
+    --overlay-hover: rgb(255 255 255 / 0.12);
 
-  /* album art placeholders, before the image loads */
-  --art-on-panel: #d3c2c2;
-  --art-on-card: rgb(0 0 0 / 0.1);
+    /* album art placeholders, before the image loads */
+    --art-on-panel: #d3c2c2;
+    --art-on-card: rgb(0 0 0 / 0.1);
 
-  /* primary action */
-  --play-bg: #fdf3f4;
-  --play-bg-hover: #ffffff;
-  --play-icon: #c53939;
+    /* primary action */
+    --play-bg: #fdf3f4;
+    --play-bg-hover: #ffffff;
+    --play-icon: #c53939;
 
-  /* volume slider — sits on the bar, so it reads against --bar */
-  --slider-fill: #f6c1c9;
-  --slider-thumb: #fffafa;
-  --slider-track: rgb(0 0 0 / 0.22);
+    /* volume slider — sits on the bar, so it reads against --bar */
+    --slider-fill: #f6c1c9;
+    --slider-thumb: #fffafa;
+    --slider-track: rgb(0 0 0 / 0.22);
 
-  /* seek bar — sits on the panel/bar seam, so it reads against --panel instead,
+    /* seek bar — sits on the panel/bar seam, so it reads against --panel instead,
      and can't share the volume slider's colors. Deeper than the volume fill on
      purpose: the pale panel needs the extra depth for progress to be readable
      at a glance. Unplayed is the divider line, which is what draws the bar's
      top border now that the border-t is gone. */
-  --seek-fill: #d95c72;
-  --seek-track: var(--divider);
+    --seek-fill: #d95c72;
+    --seek-track: var(--divider);
 
-  /* scrollbar */
-  --scrollbar-thumb: rgb(0 0 0 / 0.25);
-  --scrollbar-thumb-hover: rgb(0 0 0 / 0.4);
+    /* scrollbar */
+    --scrollbar-thumb: rgb(0 0 0 / 0.25);
+    --scrollbar-thumb-hover: rgb(0 0 0 / 0.4);
 }
 
 /* Exposes the palette above as Tailwind colors, so JSX can say `bg-card` /
@@ -76,171 +76,171 @@
    The slider, seek and scrollbar colors are only used in plain CSS below, so
    they don't need entries. */
 @theme inline {
-  --color-panel: var(--panel);
-  --color-bar: var(--bar);
-  --color-card: var(--card);
-  --color-card-accent: var(--card-accent);
-  --color-divider: var(--divider);
+    --color-panel: var(--panel);
+    --color-bar: var(--bar);
+    --color-card: var(--card);
+    --color-card-accent: var(--card-accent);
+    --color-divider: var(--divider);
 
-  --color-on-panel: var(--text-on-panel);
-  --color-on-panel-muted: var(--text-on-panel-muted);
-  --color-on-panel-faint: var(--text-on-panel-faint);
-  --color-on-card: var(--text-on-card);
-  --color-on-card-muted: var(--text-on-card-muted);
+    --color-on-panel: var(--text-on-panel);
+    --color-on-panel-muted: var(--text-on-panel-muted);
+    --color-on-panel-faint: var(--text-on-panel-faint);
+    --color-on-card: var(--text-on-card);
+    --color-on-card-muted: var(--text-on-card-muted);
 
-  --color-overlay-hover: var(--overlay-hover);
-  --color-art-on-panel: var(--art-on-panel);
-  --color-art-on-card: var(--art-on-card);
+    --color-overlay-hover: var(--overlay-hover);
+    --color-art-on-panel: var(--art-on-panel);
+    --color-art-on-card: var(--art-on-card);
 
-  --color-play: var(--play-bg);
-  --color-play-hover: var(--play-bg-hover);
-  --color-play-icon: var(--play-icon);
+    --color-play: var(--play-bg);
+    --color-play-hover: var(--play-bg-hover);
+    --color-play-icon: var(--play-icon);
 }
 
 /* the window is transparent, so no layer above the frame art may paint a background */
 html,
 body,
 #root {
-  background: transparent;
+    background: transparent;
 }
 /* transparent track so only the thumb shows; translucent so it tints the theme's background */
 ::-webkit-scrollbar {
-  width: 8px;
-  background: transparent;
+    width: 8px;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 999px;
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
+    background: var(--scrollbar-thumb-hover);
 }
 
 /* Range sliders. The native widget paints over anything set on the element itself,
    so the colors live on the track/thumb pseudo-elements. */
 input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
 }
 
 /* --pct (0-100) is set per-render by the component; Chromium has no fill
    pseudo-element, so the played portion is a hard-stop gradient */
 input[type="range"]::-webkit-slider-runnable-track {
-  height: 4px;
-  border-radius: 999px;
-  background: linear-gradient(
-    to right,
-    var(--slider-fill) calc(var(--pct, 0) * 1%),
-    var(--slider-track) calc(var(--pct, 0) * 1%)
-  );
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(
+        to right,
+        var(--slider-fill) calc(var(--pct, 0) * 1%),
+        var(--slider-track) calc(var(--pct, 0) * 1%)
+    );
 }
 
 input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; /* required again — the thumb doesn't inherit it */
-  width: 12px;
-  height: 12px;
-  border-radius: 999px;
-  background: var(--slider-thumb);
-  margin-top: -4px; /* (thumb 12 - track 4) / 2, centers it on the track */
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+    -webkit-appearance: none; /* required again — the thumb doesn't inherit it */
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--slider-thumb);
+    margin-top: -4px; /* (thumb 12 - track 4) / 2, centers it on the track */
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
 }
 
 input[type="range"]:disabled {
-  cursor: default;
-  opacity: 0.4;
+    cursor: default;
+    opacity: 0.4;
 }
 
 /* The seek bar doubles as the control bar's top */
 input[type="range"].seek {
-  /* remap rather than restate the gradient: custom properties inherit into the
+    /* remap rather than restate the gradient: custom properties inherit into the
      shadow pseudo-elements (the same way --pct does), so the track rule above
      picks these up unchanged */
-  --slider-fill: var(--seek-fill);
-  --slider-track: var(--seek-track);
+    --slider-fill: var(--seek-fill);
+    --slider-track: var(--seek-track);
 
-  height: 3px; /* on the element too, so it can sit flush against the edge */
-  margin: 0;
-  display: block;
+    height: 3px; /* on the element too, so it can sit flush against the edge */
+    margin: 0;
+    display: block;
 }
 
 input[type="range"].seek::-webkit-slider-runnable-track {
-  height: 3px;
-  border-radius: 0;
+    height: 3px;
+    border-radius: 0;
 }
 
 /* collapsed rather than display:none, which would keep it focusable for
    whenever seeking gets wired up */
 input[type="range"].seek::-webkit-slider-thumb {
-  width: 0;
-  opacity: 0;
+    width: 0;
+    opacity: 0;
 }
 
 @container (max-width: 420px) {
-  input[type="range"].volume {
-    writing-mode: vertical-lr;
-    direction: rtl;
-    width: 4px;
-    height: 40px;
-  }
+    input[type="range"].volume {
+        writing-mode: vertical-lr;
+        direction: rtl;
+        width: 4px;
+        height: 40px;
+    }
 
-  input[type="range"].volume::-webkit-slider-runnable-track {
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(
-      to top,
-      var(--slider-fill) calc(var(--pct, 0) * 1%),
-      var(--slider-track) calc(var(--pct, 0) * 1%)
-    );
-  }
+    input[type="range"].volume::-webkit-slider-runnable-track {
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(
+            to top,
+            var(--slider-fill) calc(var(--pct, 0) * 1%),
+            var(--slider-track) calc(var(--pct, 0) * 1%)
+        );
+    }
 
-  input[type="range"].volume::-webkit-slider-thumb {
-    margin-top: 0;
-    margin-left: -4px;
-  }
+    input[type="range"].volume::-webkit-slider-thumb {
+        margin-top: 0;
+        margin-left: -4px;
+    }
 
-  .device-name {
-    display: none;
-  }
+    .device-name {
+        display: none;
+    }
 
-  /* no device name so different top% */
-  .volume-group {
-    top: 50%;
-  }
+    /* no device name so different top% */
+    .volume-group {
+        top: 50%;
+    }
 
-  /* Below 420 , controls and volume slider moves to the right. */
-  .transport {
-    position: absolute;
-    top: 50%;
-    right: 3rem; /* clears the vertical volume slider and its overhanging thumb */
-    transform: translateY(-50%);
-    width: auto; /* was w-[40%] */
-    max-width: none; /* was max-w-[600px] */
-  }
+    /* Below 420 , controls and volume slider moves to the right. */
+    .transport {
+        position: absolute;
+        top: 50%;
+        right: 3rem; /* clears the vertical volume slider and its overhanging thumb */
+        transform: translateY(-50%);
+        width: auto; /* was w-[40%] */
+        max-width: none; /* was max-w-[600px] */
+    }
 
-  /* When controls are pinned to the right, the track info shouldn't truncate early. */
-  .track-info {
-    right: 12.5rem;
-    max-width: none;
-  }
+    /* When controls are pinned to the right, the track info shouldn't truncate early. */
+    .track-info {
+        right: 12.5rem;
+        max-width: none;
+    }
 }
 
 /* Fades content at the top edge. A mask instead of gradient overlay --fade-h is driven by scroll position. */
 .scroll-fade {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
-  mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
+    mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-h, 0px));
 }
 
 .logo {
-  height: 18em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
+    height: 18em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: 0.75s;
 }
